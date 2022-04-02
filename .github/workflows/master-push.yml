@@ -3,7 +3,7 @@ name: backend-pipeline
 on:
   push:
     branches:
-      - backend
+      - master
 env:
  working-directory-backend: ./backend
  working-directory-frontend: ./frontend
@@ -46,10 +46,10 @@ jobs:
         run: |          
           docker push ${{secrets.DOCKER_USERNAME}}/aws-loader-backend
           docker push ${{secrets.DOCKER_USERNAME}}/aws-loader-frontend
-         
+          
       - name: generate deployment package
-        run: zip deploy.zip Dockerrun.aws.json
-
+        run: zip -r deploy.zip *
+         
       - name: deploy to AWS
         uses: einaregilsson/beanstalk-deploy@v20
         with:
@@ -58,7 +58,7 @@ jobs:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
 
           application_name: file-loader
-          environment_name: file-loader-env
+          environment_name: Fileloader-env-1
 
           region: "us-east-1"
           deployment_package: deploy.zip
