@@ -2,15 +2,13 @@ version: '3'
 
 services:
   backend:
-    build:
-      context: backend/
+    image: msolomodenko/aws-loader-backend
     ports: 
       - 5123:5000
 
   frontend:
-    build:
-      context: frontend/
+    image: msolomodenko/aws-loader-frontend
     ports: 
-      - 80:8080
+      - 5312:8080
       
    
