@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -21,6 +22,12 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("aweawe"))
 	})
+
+	http.HandleFunc("/health_check", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+
+	fmt.Println("start lintening on port 5000")
 
 	log.Panic(http.ListenAndServe(":5000", nil))
 }

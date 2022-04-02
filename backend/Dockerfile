@@ -9,7 +9,5 @@ FROM alpine:3.15 as runtime
 WORKDIR /app
 COPY --from=builder /app/main .
 
-EXPOSE 5000
-
 CMD ["./main"]
 
