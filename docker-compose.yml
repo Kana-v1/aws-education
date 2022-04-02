@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  backend:
+    build:
+      context: backend/
+    ports: 
+      - 5123:5000
+
+  frontend:
+    build:
+      context: frontend/
+    ports: 
+      - 80:8080
+      
+   

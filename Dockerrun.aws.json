@@ -1,0 +1,31 @@
+{
+  "AWSEBDockerrunVersion": 4,
+  "containerDefinitions": [
+    {
+      "name": "backend",
+      "image": "aws-education-file-loader-backend",
+      "hostname": "backend",
+      "portMappings": [
+        {
+          "hostPort": 5000,
+          "containerPort": 5000
+        }
+      ],
+      "essential": false,
+      "memory": 100
+    },
+    {
+      "name": "frontend",
+      "image": "aws-education-file-loader-frontend",
+      "hostname": "frontend",
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 8080
+        }
+      ],
+      "essential": false,
+      "memory": 100
+    }
+  ]
+}
