@@ -58,7 +58,7 @@ jobs:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
 
           application_name: file-loader
-          environment_name: Fileloader-env-3
+          environment_name: Fileloader-env-4
 
           region: "us-east-1"
           deployment_package: deploy.zip
