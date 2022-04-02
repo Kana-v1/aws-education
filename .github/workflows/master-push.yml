@@ -37,12 +37,13 @@ jobs:
          docker build -t aws-education-file-loader-frontend frontend/
       
       - name: dockerhub setup
-        run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
-      
+        run: echo ${{secrets.DOCKER_PASSWORD}} | docker login -u ${{secrets.DOCKER_USERNAME}} --password-stdin
+
       - name: push containers
         run: |
-          docker push aws-education-file-loader-backend
-          docker push aws-education-file-loader-frontend
+          docker tag aws-education-file-loader-backend ${{secrets.DOCKER_USERNAME}}/aws-loader-backend
+          docker tag aws-education-file-loader-frontend ${{secrets.DOCKER_USERNAME}}/aws-loader-frontend
+          docker push
          
       - name: update dockerrun.json
         run: |
