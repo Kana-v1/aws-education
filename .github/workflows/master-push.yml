@@ -3,7 +3,7 @@ name: backend-pipeline
 on:
   push:
     branches:
-      - backend
+      - master
 env:
  working-directory-backend: ./backend
  working-directory-frontend: ./frontend
@@ -55,7 +55,7 @@ jobs:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
 
           application_name: file-loader
-          environment_name: file-loader-env
+          environment_name: Fileloader-env
 
           region: "us-east-1"
           deployment_package: docker-compose.yml
