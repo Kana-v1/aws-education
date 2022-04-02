@@ -47,11 +47,6 @@ jobs:
           docker push ${{secrets.DOCKER_USERNAME}}/aws-loader-backend
           docker push ${{secrets.DOCKER_USERNAME}}/aws-loader-frontend
          
-      - name: update dockerrun.json
-        run: |
-         sudo apt-get install jq
-         jq '.AWSEBDockerrunVersion =  ${{ github.run_id }}' Dockerrun.aws.json > tmp.$$.json && mv tmp.$$.json Dockerrun.aws.json 
-         
       - name: generate deployment package
         run: zip deploy.zip Dockerrun.aws.json
 
