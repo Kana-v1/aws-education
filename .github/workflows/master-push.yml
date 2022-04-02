@@ -48,7 +48,7 @@ jobs:
           docker push ${{secrets.DOCKER_USERNAME}}/aws-loader-frontend
           
       - name: generate deployment package
-        run: zip -r deploy.zip
+        run: zip -r deploy.zip *
          
       - name: deploy to AWS
         uses: einaregilsson/beanstalk-deploy@v20
