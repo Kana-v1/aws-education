@@ -46,6 +46,9 @@ jobs:
         run: |          
           docker push ${{secrets.DOCKER_USERNAME}}/aws-loader-backend
           docker push ${{secrets.DOCKER_USERNAME}}/aws-loader-frontend
+          
+      - name: generate deployment package
+        run: zip -r deploy.zip
          
       - name: deploy to AWS
         uses: einaregilsson/beanstalk-deploy@v20
@@ -55,8 +58,8 @@ jobs:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
 
           application_name: file-loader
-          environment_name: Fileloader-env
+          environment_name: Fileloader-env-1
 
           region: "us-east-1"
-          deployment_package: docker-compose.yml
+          deployment_package: deploy.zip
           version_label: ${{ github.run_id }}
