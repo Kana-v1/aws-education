@@ -57,9 +57,10 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
 
-          application_name: NewFileLoader
-          environment_name: Newfileloader-env
+          application_name: file-loader
+          environment_name: file-loader-env
 
           region: "us-east-1"
+          
           deployment_package: deploy.zip
           version_label: ${{ github.run_id }}
