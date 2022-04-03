@@ -4,7 +4,6 @@ import (
 	"education-aws/aws"
 	"education-aws/config"
 	"education-aws/handler"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -35,8 +34,6 @@ func main() {
 
 func CorsePreflight(next http.HandlerFunc) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println(r.URL.Scheme)
-		fmt.Println(r.URL.RawQuery)
 		w.Header().Set("Access-Control-Allow-Origin", "http://fileloaderv2-env.eba-mnihhjyr.us-east-1.elasticbeanstalk.com")
 		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, *")

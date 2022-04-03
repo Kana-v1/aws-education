@@ -2,6 +2,7 @@ package aws
 
 import (
 	"education-aws/config"
+	"fmt"
 	"mime/multipart"
 	"path"
 
@@ -40,6 +41,8 @@ func (handler *S3Handler) Upload(file multipart.File, filename string) { // noli
 	})
 
 	if err != nil {
+		fmt.Println(&handler.cfg.BucketName)
+		fmt.Println(&handler.cfg.Region)
 		panic(err)
 	}
 }
