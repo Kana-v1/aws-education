@@ -18,7 +18,8 @@ type Handler struct {
 func (handler *Handler) Upload(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
-		panic(err)
+		w.Write([]byte(err.Error()))
+		w.WriteHeader(http.StatusInternalServerError)
 	}
 
 	file, fileHeader, err := r.FormFile("file")
@@ -26,7 +27,12 @@ func (handler *Handler) Upload(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	handler.S3.Upload(file, fileHeader.Filename)
+	err = handler.S3.Upload(file, fileHeader.Filename)
+
+	if err != nil {
+		w.Write([]byte(err.Error()))
+		w.WriteHeader(http.StatusInternalServerError)
+	}
 
 	w.WriteHeader(http.StatusOK)
 }

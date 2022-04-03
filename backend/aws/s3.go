@@ -32,7 +32,7 @@ func NewS3Handler(cfg *config.AWSConfig) *S3Handler {
 	}
 }
 
-func (handler *S3Handler) Upload(file multipart.File, filename string) { // nolint:interfacer // ...
+func (handler *S3Handler) Upload(file multipart.File, filename string) error { // nolint:interfacer // ...
 	_, err := handler.uploader.Upload(&s3manager.UploadInput{
 		Bucket: &handler.cfg.BucketName,
 		ACL:    aws.String("public-read"),
@@ -43,8 +43,10 @@ func (handler *S3Handler) Upload(file multipart.File, filename string) { // noli
 	if err != nil {
 		fmt.Println(handler.cfg.BucketName)
 		fmt.Println(handler.cfg.Region)
-		panic(err)
+		return err
 	}
+
+	return nil
 }
 
 func (handler *S3Handler) Download(filename string) []byte {
@@ -65,7 +67,7 @@ func connectToAWS(accesskeyID, secretKey, region string) (*session.Session, erro
 	awsConfig := &aws.Config{
 		Region:      aws.String(region),
 		Credentials: credentials.NewStaticCredentials(accesskeyID, secretKey, ""),
-		Endpoint:    aws.String("https://s3.amazonaws.com"), 
+		Endpoint:    aws.String("https://s3.amazonaws.com"),
 	}
 
 	return session.NewSession(awsConfig)
