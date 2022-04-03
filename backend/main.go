@@ -34,7 +34,7 @@ func main() {
 
 func CorsePreflight(next http.HandlerFunc) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:8080")
+		w.Header().Set("Access-Control-Allow-Origin", "http://fileloaderv2-env.eba-mnihhjyr.us-east-1.elasticbeanstalk.com:80")
 		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, *")
 		w.Header().Set("Access-Control-Allow-Credentials", "true")
