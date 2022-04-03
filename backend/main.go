@@ -4,7 +4,6 @@ import (
 	"education-aws/aws"
 	"education-aws/config"
 	"education-aws/handler"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -12,7 +11,7 @@ import (
 )
 
 func main() {
-	godotenv.Load()
+	godotenv.Load("dev.env")
 
 	s3Handler := aws.NewS3Handler(config.NewConfig())
 
@@ -29,8 +28,6 @@ func main() {
 	http.HandleFunc("/health_check", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
-
-	fmt.Println("start lintening on port 5000")
 
 	log.Panic(http.ListenAndServe(":5000", nil))
 }

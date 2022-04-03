@@ -1,58 +1,65 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+  <div>
+    <div>
+      <input type="file" @change="uploadFile" ref="file" />
+      <button @click="submitFile">Upload!</button>
+    </div>
+    <div v-if="files.length > 0">
+      <div v-for="(file, i) in files" :key="i">
+        <p>{{ file }}</p>
+        <button @click="downloadFile(file)">Download!</button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
-}
-</script>
+import axios from "axios";
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style>
+export default {
+  data() {
+    return {
+      files: [],
+      fileName: "",
+    };
+  },
+
+  methods: {
+    uploadFile() {
+      this.Files = this.$refs.file.files[0];
+    },
+
+    submitFile() {
+      const formData = new FormData();
+      formData.append("file", this.Files, this.Files.name);
+      const headers = { "Content-Type": "multipart/form-data" };
+      axios.post("http://backend:5000/upload", formData, headers);
+      this.files.push(this.Files.name);
+    },
+
+    downloadFile(filename) {
+      const requestBody = { file_name: filename };
+
+      axios.post("http://backend:5000/download", requestBody).then((res) => {
+        const byteCharacters = atob(res.data.file);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+
+        const blob = new Blob([byteArray], { type: "octet-stream" });
+        const href = URL.createObjectURL(blob);
+        const a = Object.assign(document.createElement("a"), {
+          href,
+          style: "display:none",
+          download: filename,
+        });
+        document.body.appendChild(a);
+
+        a.click();
+      });
+    },
+  },
+};
+</script>
