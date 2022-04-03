@@ -21,7 +21,6 @@ func (handler *Handler) Upload(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	// fileName := r.Form.Get("file_name")
 	file, fileHeader, err := r.FormFile("file")
 	if err != nil {
 		panic(err)

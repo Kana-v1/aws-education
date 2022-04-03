@@ -41,8 +41,8 @@ func (handler *S3Handler) Upload(file multipart.File, filename string) { // noli
 	})
 
 	if err != nil {
-		fmt.Println(&handler.cfg.BucketName)
-		fmt.Println(&handler.cfg.Region)
+		fmt.Println(handler.cfg.BucketName)
+		fmt.Println(handler.cfg.Region)
 		panic(err)
 	}
 }
@@ -65,6 +65,7 @@ func connectToAWS(accesskeyID, secretKey, region string) (*session.Session, erro
 	awsConfig := &aws.Config{
 		Region:      aws.String(region),
 		Credentials: credentials.NewStaticCredentials(accesskeyID, secretKey, ""),
+		Endpoint:    aws.String(fmt.Sprintf("https://s3.%s.amazonaws.com", region)),
 	}
 
 	return session.NewSession(awsConfig)
