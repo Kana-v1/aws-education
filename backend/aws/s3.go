@@ -65,7 +65,7 @@ func connectToAWS(accesskeyID, secretKey, region string) (*session.Session, erro
 	awsConfig := &aws.Config{
 		Region:      aws.String(region),
 		Credentials: credentials.NewStaticCredentials(accesskeyID, secretKey, ""),
-		Endpoint:    aws.String(""), 
+		Endpoint:    aws.String("https://elasticbeanstalk-us-east-1-809143468780.s3-website.us-east-1.amazonaws.com"), 
 	}
 
 	return session.NewSession(awsConfig)
