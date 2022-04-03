@@ -6,7 +6,6 @@ on:
       - master
 env:
  working-directory-backend: ./backend
- working-directory-frontend: ./frontend
  
 jobs:    
   test:
@@ -47,9 +46,18 @@ jobs:
           docker push ${{secrets.DOCKER_USERNAME}}/aws-loader-backend
           docker push ${{secrets.DOCKER_USERNAME}}/aws-loader-frontend
           
-      - name: generate deployment package
-        run: zip -r deploy.zip *
+      - name: create deployment package
+        run: | 
+         touch .env
          
+         echo AWS_REGION=${{ secrets.AWS_REGION }} >> .env 
+         echo AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} >> .env 
+         echo AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} >> .env 
+         echo BUCKET_NAME=${{ secrets.BUCKET_NAME }} >> .env 
+         
+         zip deployment.zip .env docker-compose.yml               
+          
+
       - name: deploy to AWS
         uses: einaregilsson/beanstalk-deploy@v20
         with:
@@ -57,10 +65,10 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
 
-          application_name: file-loader
-          environment_name: file-loader-env
+          application_name: file-loader-v2
+          environment_name: Fileloaderv2-env
 
           region: "us-east-1"
           
-          deployment_package: deploy.zip
+          deployment_package: deployment.zip
           version_label: ${{ github.run_id }}
