@@ -1,6 +1,9 @@
 package main
 
 import (
+	"education-aws/aws"
+	"education-aws/config"
+	"education-aws/handler"
 	"fmt"
 	"log"
 	"net/http"
@@ -11,14 +14,14 @@ import (
 func main() {
 	godotenv.Load()
 
-	// s3Handler := aws.NewS3Handler(config.NewConfig())
+	s3Handler := aws.NewS3Handler(config.NewConfig())
 
-	// handler := &handler.Handler{
-	// 	S3: s3Handler,
-	// }
+	handler := &handler.Handler{
+		S3: s3Handler,
+	}
 
-	// http.Handle("/download", CorsePreflight(handler.Download))
-	// http.Handle("/upload", CorsePreflight(handler.Upload))
+	http.Handle("/download", CorsePreflight(handler.Download))
+	http.Handle("/upload", CorsePreflight(handler.Upload))
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("aweawe"))
 	})

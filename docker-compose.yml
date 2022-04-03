@@ -3,6 +3,11 @@ version: '3'
 services:
   backend:
     image: msolomodenko/aws-loader-backend
+    environment:
+     - AWS_REGION="${AWS_REGION}"
+     - AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}"
+     - AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
+     - BUCKET_NAME="${BUCKET_NAME}"
     ports: 
       - 5123:5000
 
