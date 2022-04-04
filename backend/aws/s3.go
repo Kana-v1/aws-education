@@ -22,6 +22,7 @@ type S3Handler struct {
 func NewS3Handler(cfg *config.AWSConfig) *S3Handler {
 	session, err := connectToAWS(cfg.AccessKeyID, cfg.SecretKey, cfg.Region)
 	if err != nil {
+		fmt.Println(err)
 		panic(err)
 	}
 
@@ -35,13 +36,13 @@ func NewS3Handler(cfg *config.AWSConfig) *S3Handler {
 func (handler *S3Handler) Upload(file multipart.File, filename string) error { // nolint:interfacer // ...
 	_, err := handler.uploader.Upload(&s3manager.UploadInput{
 		Bucket: &handler.cfg.BucketName,
-		ACL:    aws.String("public-read"),
+		ACL:    aws.String("public-read-write"),
 		Key:    aws.String(path.Join("file-loader-v2", "uploaded-files", filename)),
 		Body:   file,
 	})
 
 	if err != nil {
-		err =  fmt.Errorf("bucket name: %s; region: %s; %w", handler.cfg.BucketName, handler.cfg.Region, err)
+		err = fmt.Errorf("bucket name: %s; region: %s; %w", handler.cfg.BucketName, handler.cfg.Region, err)
 		fmt.Println(err)
 		return err
 	}
