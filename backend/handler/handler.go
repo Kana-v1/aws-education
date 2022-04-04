@@ -32,6 +32,7 @@ func (handler *Handler) Upload(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.Write([]byte(err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)
