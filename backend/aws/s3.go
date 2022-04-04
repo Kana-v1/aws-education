@@ -34,15 +34,16 @@ func NewS3Handler(cfg *config.AWSConfig) *S3Handler {
 }
 
 func (handler *S3Handler) Upload(file multipart.File, filename string) error { // nolint:interfacer // ...
-	_, err := handler.uploader.Upload(&s3manager.UploadInput{
-		Bucket: &handler.cfg.BucketName,
+	ui := &s3manager.UploadInput{
+		Bucket: aws.String(handler.cfg.BucketName),
 		ACL:    aws.String("public-read-write"),
 		Key:    aws.String(path.Join("file-loader-v2", "uploaded-files", filename)),
 		Body:   file,
-	})
+	}
+	_, err := handler.uploader.Upload(ui)
 
 	if err != nil {
-		err = fmt.Errorf("bucket name: %s; region: %s; %w", handler.cfg.BucketName, handler.cfg.Region, err)
+		err = fmt.Errorf("%v; bucket name: %s; region: %s; %w", *ui, handler.cfg.BucketName, handler.cfg.Region, err)
 		fmt.Println(err)
 		return err
 	}
