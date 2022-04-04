@@ -22,7 +22,7 @@ type S3Handler struct {
 func NewS3Handler(cfg *config.AWSConfig) *S3Handler {
 	fmt.Println("key id: " + cfg.AccessKeyID)
 	fmt.Println("secret key: " + cfg.SecretKey)
-	session, err := connectToAWS("AKIA3YZFVQLWPOFNI2CS", "jPewCT4Yo/qXog8sAS9TXuFikKKx3RzuIqHEevXk", "us-east-1")
+	session, err := connectToAWS(cfg.AccessKeyID, cfg.SecretKey, cfg.Region)
 	if err != nil {
 		fmt.Println(err)
 		panic(err)
