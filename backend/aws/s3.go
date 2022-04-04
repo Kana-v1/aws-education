@@ -20,8 +20,9 @@ type S3Handler struct {
 }
 
 func NewS3Handler(cfg *config.AWSConfig) *S3Handler {
-	fmt.Println("key id: " + cfg.AccessKeyID)
-	fmt.Println("secret key: " + cfg.SecretKey)
+	fmt.Println(cfg.AccessKeyID)
+	fmt.Println(cfg.SecretKey)
+	fmt.Println(cfg.Region)
 	session, err := connectToAWS(cfg.AccessKeyID, cfg.SecretKey, cfg.Region)
 	if err != nil {
 		fmt.Println(err)
