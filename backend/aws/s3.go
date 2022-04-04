@@ -67,6 +67,7 @@ func (handler *S3Handler) Download(filename string) []byte {
 
 func connectToAWS(accesskeyID, secretKey, region string) (*session.Session, error) {
 	fmt.Println(accesskeyID)
+	fmt.Println(accesskeyID[0])
 	fmt.Println(secretKey)
 	fmt.Println(region)
 	awsConfig := &aws.Config{
