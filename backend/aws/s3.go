@@ -20,7 +20,7 @@ type S3Handler struct {
 }
 
 func NewS3Handler(cfg *config.AWSConfig) *S3Handler {
-	session, err := connectToAWS(cfg.AccessKeyID, cfg.SecretKey, cfg.Region)
+	session, err := connectToAWS(cfg.AccessKeyID, cfg.SecretKey, "us-east-1")
 	if err != nil {
 		fmt.Println(err)
 		panic(err)
@@ -41,7 +41,7 @@ func (handler *S3Handler) Upload(file multipart.File, filename string) error { /
 		Bucket: aws.String("elasticbeanstalk-us-east-1-809143468780"),
 		ACL:    aws.String("public-read-write"),
 		Key:    aws.String(path.Join("file-loader-v2", "uploaded-files", filename)),
-		Body:   file,	
+		Body:   file,
 	}
 	_, err := handler.uploader.Upload(ui)
 
