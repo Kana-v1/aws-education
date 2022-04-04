@@ -41,7 +41,9 @@ func (handler *S3Handler) Upload(file multipart.File, filename string) error { /
 	})
 
 	if err != nil {
-		return fmt.Errorf("bucket name: %s; region: %s; %w", handler.cfg.BucketName, handler.cfg.Region, err)
+		err =  fmt.Errorf("bucket name: %s; region: %s; %w", handler.cfg.BucketName, handler.cfg.Region, err)
+		fmt.Println(err)
+		return err
 	}
 
 	return nil
