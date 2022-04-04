@@ -40,7 +40,7 @@ export default {
     downloadFile(filename) {
       const requestBody = { file_name: filename };
 
-      axios.post("http://http://fileloaderv2-env.eba-mnihhjyr.us-east-1.elasticbeanstalk.com:5000/download", requestBody).then((res) => {
+      axios.post("http://fileloaderv2-env.eba-mnihhjyr.us-east-1.elasticbeanstalk.com:5000/download", requestBody).then((res) => {
         const byteCharacters = atob(res.data.file);
         const byteNumbers = new Array(byteCharacters.length);
         for (let i = 0; i < byteCharacters.length; i++) {
