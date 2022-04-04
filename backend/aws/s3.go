@@ -20,18 +20,12 @@ type S3Handler struct {
 }
 
 func NewS3Handler(cfg *config.AWSConfig) *S3Handler {
-	fmt.Println(cfg.AccessKeyID)
-	fmt.Println(cfg.SecretKey)
-	fmt.Println(cfg.Region)
 	session, err := connectToAWS(cfg.AccessKeyID, cfg.SecretKey, cfg.Region)
 	if err != nil {
 		fmt.Println(err)
 		panic(err)
 	}
 
-	fmt.Println(cfg.AccessKeyID)
-	fmt.Println(cfg.SecretKey)
-	fmt.Println(cfg.Region)
 	return &S3Handler{
 		cfg:        cfg,
 		downloader: s3manager.NewDownloader(session),
@@ -72,6 +66,9 @@ func (handler *S3Handler) Download(filename string) []byte {
 }
 
 func connectToAWS(accesskeyID, secretKey, region string) (*session.Session, error) {
+	fmt.Println(accesskeyID)
+	fmt.Println(secretKey)
+	fmt.Println(region)
 	awsConfig := &aws.Config{
 		Region:      aws.String(region),
 		Credentials: credentials.NewStaticCredentials(accesskeyID, secretKey, ""),
