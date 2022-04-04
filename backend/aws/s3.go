@@ -43,7 +43,7 @@ func (handler *S3Handler) Upload(file multipart.File, filename string) error { /
 	_, err := handler.uploader.Upload(ui)
 
 	if err != nil {
-		err = fmt.Errorf("%v; bucket name: %s; region: %s; %w", ui.Bucket, handler.cfg.BucketName, handler.cfg.Region, err)
+		err = fmt.Errorf("%v; bucket name: %s; region: %s; %w", *ui.Bucket, handler.cfg.BucketName, handler.cfg.Region, err)
 		fmt.Println(err)
 		return err
 	}
