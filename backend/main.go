@@ -29,7 +29,8 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 	})
 
-	log.Panic(http.ListenAndServe(":5123", nil))
+
+	log.Panic(http.ListenAndServe(":5000", nil))
 }
 
 func CorsePreflight(next http.HandlerFunc) http.Handler {
