@@ -1,6 +1,9 @@
 package config
 
-import "os"
+import (
+	"os"
+	"strings"
+)
 
 type AWSConfig struct {
 	SecretKey   string
@@ -9,11 +12,11 @@ type AWSConfig struct {
 	BucketName  string
 }
 
-func NewConfig() *AWSConfig{
+func NewConfig() *AWSConfig {
 	return &AWSConfig{
-		SecretKey: os.Getenv("AWS_SECRET_ACCESS_KEY"),
-		AccessKeyID: os.Getenv("AWS_ACCESS_KEY_ID"),
-		Region: os.Getenv("AWS_REGION"),
-		BucketName: os.Getenv("BUCKET_NAME"),
+		SecretKey:   strings.Trim(os.Getenv("AWS_SECRET_ACCESS_KEY"), `"`),
+		AccessKeyID: strings.Trim(os.Getenv("AWS_ACCESS_KEY_ID"), `"`),
+		Region:      strings.Trim(os.Getenv("AWS_REGION"), `"`),
+		BucketName:  strings.Trim(os.Getenv("BUCKET_NAME"), `"`),
 	}
 }
