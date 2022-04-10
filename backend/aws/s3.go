@@ -54,8 +54,8 @@ func (handler *S3Handler) Upload(file multipart.File, filename string) error { /
 func (handler *S3Handler) Download(filename string) []byte {
 	buf := aws.NewWriteAtBuffer([]byte{})
 	_, err := handler.downloader.Download(buf, &s3.GetObjectInput{
-		Bucket: aws.String("elasticbeanstalk-us-east-1-809143468780"),
-		Key:    aws.String(path.Join("file-loader-v2", "uploaded-files", filename)),
+		Bucket: aws.String("elasticbeanstalk-us-east-1-317712438203"),
+		Key:    aws.String(path.Join("file-loader", "uploaded-files", filename)),
 	})
 
 	if err != nil {
