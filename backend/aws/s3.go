@@ -35,9 +35,9 @@ func NewS3Handler(cfg *config.AWSConfig) *S3Handler {
 
 func (handler *S3Handler) Upload(file multipart.File, filename string) error { // nolint:interfacer // ...
 	ui := &s3manager.UploadInput{
-		Bucket: aws.String("elasticbeanstalk-us-east-1-809143468780"),
+		Bucket: aws.String("elasticbeanstalk-us-east-1-317712438203"),
 		ACL:    aws.String("public-read-write"),
-		Key:    aws.String(path.Join("file-loader-v2", "uploaded-files", filename)),
+		Key:    aws.String(path.Join("file-loader", "uploaded-files", filename)),
 		Body:   file,
 	}
 	_, err := handler.uploader.Upload(ui)
