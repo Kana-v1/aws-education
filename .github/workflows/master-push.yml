@@ -65,8 +65,8 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
 
-          application_name: file-loader-v2
-          environment_name: Fileloaderv2-env
+          application_name: file-loader
+          environment_name: Fileloader-env-1
 
           region: "us-east-1"
           
