@@ -1,0 +1,100 @@
+stages:
+  - test
+  - build
+  - deploy
+
+variables:
+  BACKEND_PATH: "./backend"
+  FRONTEND_PATH: "./frontend"
+  APP_NAME: "file-loader"
+  ENV_NAME: "Fileloader-env-1"
+  TEMP_NAME: "gitlab-$CI_PIPELINE_ID"
+  BUCKET_NAME: "elasticbeanstalk-us-east-1-317712438203"
+
+test:
+  image: golang:1.18.2-buster
+  stage: test
+  script: 
+  - cd $BACKEND_PATH
+
+  - touch tests.env
+  - echo AWS_REGION=$AWS_REGION >> .env 
+  - echo AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID >> .env 
+  - echo AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY >> .env 
+  - echo BUCKET_NAME=$BUCKET_NAME >> .env
+  - mv tests.env tests/
+
+  - go test ./...
+
+lint:
+  stage: test
+  image: golangci/golangci-lint:v1.46
+  script: golangci-lint run -v
+  allow_failure: true
+
+build_backend:
+  stage: build
+  services:
+  - docker:dind
+  rules: 
+  - if: $CI_COMMIT_BRANCH == "master"
+  script: 
+    - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+    - docker build -t aws-education-file-loader-backend $BACKEND_PATH
+    - docker tag aws-education-file-loader-backend $DOCKER_USERNAME/aws-loader-backend
+    - docker push $DOCKER_USERNAME/aws-loader-backend
+
+build_frontend:
+  stage: build
+  services:
+  - docker:dind
+  rules: 
+  - if:  $CI_COMMIT_BRANCH == "master"
+  script:
+    - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+    - docker build -t aws-education-file-loader-frontend $FRONTEND_PATH
+    - docker tag aws-education-file-loader-frontend $DOCKER_USERNAME/aws-loader-frontend
+    - docker push $DOCKER_USERNAME/aws-loader-frontend
+
+setup_config_file:
+  image: ubuntu
+  stage: build
+  rules: 
+  - if: $CI_COMMIT_BRANCH == "master"
+  before_script:
+    - |
+      apt-get update -y
+      apt-get upgrade -y
+      apt-get dist-upgrade -y
+      apt-get -y autoremove
+      apt-get clean
+
+      apt-get install -y zip unzip
+
+  script: 
+    - touch .env
+
+    - echo AWS_REGION=$AWS_REGION >> .env 
+    - echo AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID >> .env 
+    - echo AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY >> .env 
+    - echo BUCKET_NAME=$BUCKET_NAME >> .env
+
+    - zip deployment.zip .env docker-compose.yml
+  artifacts:
+    paths:
+      - deployment.zip
+    expire_in: 30 minutes
+
+deploy:
+  image: python
+  stage: deploy
+  rules: 
+  - if: $CI_COMMIT_BRANCH == "master"
+  script:
+    - pip install awscli
+    - aws configure set region us-east-1
+
+    - aws s3 cp deployment.zip s3://$BUCKET_NAME/gitlab_file_loader/gitlab-$CI_PIPELINE_ID.zip
+
+    - aws elasticbeanstalk create-application-version --application-name $APP_NAME --version-label $TEMP_NAME --source-bundle S3Bucket=$BUCKET_NAME,S3Key=gitlab_file_loader/gitlab-$CI_PIPELINE_ID.zip
+    - aws elasticbeanstalk update-environment --application-name $APP_NAME --environment-name $ENV_NAME --version-label $TEMP_NAME

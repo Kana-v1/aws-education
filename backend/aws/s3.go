@@ -3,7 +3,7 @@ package aws
 import (
 	"education-aws/config"
 	"fmt"
-	"mime/multipart"
+	"io"
 	"path"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -33,43 +33,38 @@ func NewS3Handler(cfg *config.AWSConfig) *S3Handler {
 	}
 }
 
-func (handler *S3Handler) Upload(file multipart.File, filename string) error { // nolint:interfacer // ...
+func (handler *S3Handler) Upload(file io.Reader, filename string) error { // nolint:interfacer // ...
 	ui := &s3manager.UploadInput{
-		Bucket: aws.String("elasticbeanstalk-us-east-1-809143468780"),
+		Bucket: aws.String("elasticbeanstalk-us-east-1-317712438203"),
 		ACL:    aws.String("public-read-write"),
-		Key:    aws.String(path.Join("file-loader-v2", "uploaded-files", filename)),
+		Key:    aws.String(path.Join("gitlab_file_loader", "uploaded-files", filename)),
 		Body:   file,
 	}
 	_, err := handler.uploader.Upload(ui)
 
 	if err != nil {
 		err = fmt.Errorf("%v; bucket name: %s; region: %s; %w", *ui.Bucket, handler.cfg.BucketName, handler.cfg.Region, err)
-		fmt.Println(err)
 		return err
 	}
 
 	return nil
 }
 
-func (handler *S3Handler) Download(filename string) []byte {
+func (handler *S3Handler) Download(filename string) ([]byte, error) {
 	buf := aws.NewWriteAtBuffer([]byte{})
 	_, err := handler.downloader.Download(buf, &s3.GetObjectInput{
-		Bucket: aws.String("elasticbeanstalk-us-east-1-809143468780"),
-		Key:    aws.String(path.Join("file-loader-v2", "uploaded-files", filename)),
+		Bucket: aws.String("elasticbeanstalk-us-east-1-317712438203"),
+		Key:    aws.String(path.Join("gitlab_file_loader", "uploaded-files", filename)),
 	})
 
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	return buf.Bytes()
+	return buf.Bytes(), nil
 }
 
 func connectToAWS(accesskeyID, secretKey, region string) (*session.Session, error) {
-	fmt.Println(accesskeyID)
-	fmt.Println(accesskeyID[0])
-	fmt.Println(secretKey)
-	fmt.Println(region)
 	awsConfig := &aws.Config{
 		Region:      aws.String(region),
 		Credentials: credentials.NewStaticCredentials(accesskeyID, secretKey, ""),

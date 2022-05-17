@@ -3,6 +3,7 @@ package handler
 import (
 	"education-aws/aws"
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
@@ -40,7 +41,11 @@ func (handler *Handler) Download(w http.ResponseWriter, r *http.Request) {
 	requestBody := new(RequestBody)
 	json.NewDecoder(r.Body).Decode(&requestBody)
 
-	file := handler.S3.Download(requestBody.FileName)
+	file, err := handler.S3.Download(requestBody.FileName)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(fmt.Sprintf("can not get file '%s'", requestBody.FileName)))
+	}
 
 	w.WriteHeader(http.StatusOK)
 
@@ -50,7 +55,7 @@ func (handler *Handler) Download(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response, _ := json.Marshal(rq)
-	_, err := w.Write([]byte(response))
+	_, err = w.Write([]byte(response))
 	if err != nil {
 		panic(err)
 	}
